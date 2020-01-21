@@ -1,0 +1,274 @@
+import java.util.Date;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import javax.swing.Timer;
+import java.awt.EventQueue;
+import javax.swing.JFrame;
+import javax.swing.JSplitPane;
+import java.awt.BorderLayout;
+import javax.swing.JButton;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
+import java.awt.Canvas;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+
+public class punchClockGui {
+
+	private JFrame frame;
+	private JTextField display;
+	//launches the application
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					punchClockGui window = new punchClockGui();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	
+	//creates the application
+	public punchClockGui() {
+		initialize();
+	}
+
+	
+	//Initializes the various components
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 600, 450);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		
+		//Displays the text field in which the user's inputs will be displayed.
+		//Shows an introductory message if an option has not been picked.
+		display = new JTextField();
+		display.setFont(new Font("Tahoma", Font.PLAIN, 25));
+		display.setBounds(10, 31, 564, 65);
+		frame.getContentPane().add(display);
+		display.setColumns(10);
+		display.setText("Welcome! Please select an option.");
+		
+		
+		numBtnInitialize();//Initializes the number pad
+		
+		
+		//Displays the "punch in" button. Used to start and employee's shift
+		JButton btnPunchIn = new JButton("Punch in");
+		btnPunchIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				display.setText("");
+				punchin();
+			}
+		});
+		btnPunchIn.setToolTipText("Punch in to start your shift");
+		btnPunchIn.setBounds(235, 107, 100, 100);
+		frame.getContentPane().add(btnPunchIn);
+		
+		
+		//Displays the "punch out" button. Used to end an employee's shift
+		JButton btnPunchOut = new JButton("Punch out");
+		btnPunchOut.setToolTipText("Punch out to end your shift");
+		btnPunchOut.setBounds(235, 224, 100, 100);
+		frame.getContentPane().add(btnPunchOut);
+		
+		
+		//Displays the "start lunch" button. Used to start and employee's lunch time
+		JButton btnStartLunch = new JButton("Start lunch");
+		btnStartLunch.setToolTipText("Start your lunch");
+		btnStartLunch.setBounds(474, 107, 100, 100);
+		frame.getContentPane().add(btnStartLunch);
+		
+		
+		//displays the "end lunch" button. Used to end an employee's lunch time
+		JButton btnEndLunch = new JButton("End lunch");
+		btnEndLunch.setToolTipText("End your lunch");
+		btnEndLunch.setBounds(474, 224, 100, 100);
+		frame.getContentPane().add(btnEndLunch);
+		
+		
+		//Displays the "Manager Override" button. Used to override the system and manage employee's
+		// punch times as well as add employee's with IDs.
+		JButton btnManagerOverride = new JButton("Manager\n override");
+		btnManagerOverride.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnManagerOverride.setToolTipText("FOR MANAGERS ONLY: Over ride the system");
+		btnManagerOverride.setForeground(Color.BLACK);
+		btnManagerOverride.setBounds(235, 345, 339, 55);
+		frame.getContentPane().add(btnManagerOverride);
+		
+		
+		//Displays the "back" button. Used to delete the rightmost character in the text field.
+		//if the text field is empty it will rewrite the introductory message in the text field.
+		JButton btnCancel = new JButton("Back");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					//creates a substring excluding the rightmost char
+					display.setText(display.getText().substring(0,display.getText().length()-1));
+				}catch(Exception r) {
+					display.setText("Welcome! Please choose an option.");
+				}
+			}
+		});
+		btnCancel.setBounds(10, 335, 65, 65);
+		frame.getContentPane().add(btnCancel);
+		
+		
+		//Displays the "Enter" button. Used to confirm the user's input.
+		JButton btnEnter = new JButton("Enter");
+		btnEnter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				punchin();
+				display.setText("Welcome! Please select an option.");
+			}
+		});
+		btnEnter.setBounds(160, 335, 65, 65);
+		frame.getContentPane().add(btnEnter);
+		
+		
+		//Displays a clock in a label, updates every second by using the updateClock listener with
+		//a timer
+		JLabel time = new JLabel(new Date().toString());
+		time.setBounds(10, 0, 564, 33);
+		frame.getContentPane().add(time);
+		ActionListener updateClock = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				time.setText(new Date().toString());
+			}
+		};
+		Timer clockUpper = new Timer(1000, updateClock);
+		clockUpper.start();
+	}
+	
+	
+	//Initializes the 0-9 buttons
+	public void numBtnInitialize() {
+		JButton buttonOne = new JButton("1");
+		buttonOne.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		buttonOne.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//concatenates the corresponding number onto the text in the text field
+				display.setText(display.getText().concat("1"));
+			}
+		});
+		buttonOne.setBounds(10, 107, 65, 65);
+		frame.getContentPane().add(buttonOne);
+		
+		JButton buttonTwo = new JButton("2");
+		buttonTwo.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		buttonTwo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				display.setText(display.getText().concat("2"));
+			}
+		});
+		buttonTwo.setBounds(85, 107, 65, 65);
+		frame.getContentPane().add(buttonTwo);
+		
+		JButton buttonThree = new JButton("3");
+		buttonThree.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		buttonThree.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				display.setText(display.getText().concat("3"));
+			}
+		});
+		buttonThree.setBounds(160, 107, 65, 65);
+		frame.getContentPane().add(buttonThree);
+		
+		JButton buttonFour = new JButton("4");
+		buttonFour.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		buttonFour.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				display.setText(display.getText().concat("4"));
+			}
+		});
+		buttonFour.setBounds(10, 183, 65, 65);
+		frame.getContentPane().add(buttonFour);
+		
+		JButton buttonFive = new JButton("5");
+		buttonFive.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		buttonFive.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				display.setText(display.getText().concat("5"));
+			}
+		});
+		buttonFive.setBounds(85, 183, 65, 65);
+		frame.getContentPane().add(buttonFive);
+		
+		JButton buttonSix = new JButton("6");
+		buttonSix.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		buttonSix.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				display.setText(display.getText().concat("6"));
+			}
+		});
+		buttonSix.setBounds(160, 183, 65, 65);
+		frame.getContentPane().add(buttonSix);
+		
+		JButton buttonSeven = new JButton("7");
+		buttonSeven.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		buttonSeven.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				display.setText(display.getText().concat("7"));
+			}
+		});
+		buttonSeven.setBounds(10, 259, 65, 65);
+		frame.getContentPane().add(buttonSeven);
+		
+		JButton buttonEight = new JButton("8");
+		buttonEight.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		buttonEight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				display.setText(display.getText().concat("8"));
+			}
+		});
+		buttonEight.setBounds(85, 259, 65, 65);
+		frame.getContentPane().add(buttonEight);
+		
+		JButton buttonNine = new JButton("9");
+		buttonNine.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		buttonNine.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				display.setText(display.getText().concat("9"));
+			}
+		});
+		buttonNine.setBounds(160, 259, 65, 65);
+		frame.getContentPane().add(buttonNine);
+		
+		JButton buttonZero = new JButton("0");
+		buttonZero.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		buttonZero.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				display.setText(display.getText().concat("0"));
+			}
+		});
+		buttonZero.setBounds(85, 335, 65, 65);
+		frame.getContentPane().add(buttonZero);
+	}
+
+	
+	private void punchin() {
+		String fileName = "employees.txt";
+		String id = display.getText();
+		try {
+			String content = new String(Files.readAllBytes(Paths.get(fileName)));
+		}catch(Exception e) {
+			display.setText("Error loading file");
+		}
+		
+	}
+}
